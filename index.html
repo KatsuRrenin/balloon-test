@@ -1,78 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Interactive Balloon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CUAK Portafolio - Karla Rosario</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.46/build/spline-viewer.js"></script>
   <style>
-    body {
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { font-family: Arial, sans-serif; overflow-y: auto; background: #f7f8fa; color: #333; }
+
+    #header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 40px;
+      background: #f7f8fa;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
       display: flex;
-      height: 100vh;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      background: #f0f8ff;
-      margin: 0;
-      font-family: sans-serif;
     }
 
-    #balloon {
-      width: 100px;
-      height: 150px;
-      background: radial-gradient(circle at 50% 40%, #ff4f4f, #d60000);
-      border-radius: 50% 50% 45% 45%;
-      position: relative;
+    #header .logo { font-size: 24px; font-weight: bold; color: #333; }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .header-text {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .button-group { display: flex; align-items: center; gap: 15px; }
+
+    .header-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    #string {
-      width: 2px;
-      height: 100px;
-      background: #555;
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    #label {
-      position: absolute;
-      bottom: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #888;
+      font-weight: bold;
       font-size: 14px;
+      transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button-secondary {
+      background-color: #e3e4e8;
+      color: #333;
+    }
+
+    .button-secondary:hover {
+      background-color: #ccc;
+    }
+
+    .button-primary {
+      background-color: #333;
+      color: #ffffff;
+    }
+
+    .button-primary:hover {
+      background-color: #444;
+    }
+
+    .circle-icon {
+      background-color: #e3e4e8;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background-color 0.3s;
+      border: 2px solid black;
+    }
+
+    svg {
+      width: 50px;
+      height: 50px;
+    }
+
+    .duck-path {
+      fill: none;
+      stroke: #333;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+
+    .animate-duck {
+      animation: drawDuck 5s ease-in-out infinite;
+    }
+
+    @keyframes drawDuck {
+      0% { stroke-dashoffset: 1000; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 1000; }
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      top: 105px;
+      right: 40px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      width: 180px;
+      background-color: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .menu-dropdown a {
+      text-decoration: none;
+      padding: 8px 10px;
+      font-size: 18px;
+      color: #333;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      border-radius: 5px;
+    }
+
+    .menu-dropdown a:hover {
+      color: #0096ff;
+      background-color: #f0f0f0;
+    }
+
+    #three-container, spline-viewer {
+      margin-top: 600px;
+      width: 100%;
+      height: 600px;
+      display: block;
     }
   </style>
 </head>
 <body>
+  <div id="header">
+    <div class="logo">Karla Rosario</div>
+    <div class="header-content">
+      <div class="header-text">
+        We help brands create digital experiences that connect with their audience
+      </div>
+      <div class="button-group">
+        <div id="circle-icon" class="circle-icon" onclick="toggleDuckAnimation()">
+          <svg viewBox="0 0 100 100">
+            <path id="duck-path" class="duck-path" d="M 20 70 Q 20 50, 40 50 Q 35 30, 55 30 Q 75 30, 75 50 Q 85 55, 75 70 Q 60 90, 30 80 Q 20 75, 20 70 Z M 60 40 A 5 5 0 1 1 59.9 40 Z M 70 50 Q 85 47, 85 50 Q 85 53, 70 50 Z" />
+          </svg>
+        </div>
+        <button class="header-button button-primary" onclick="letsTalk()"><i class="fas fa-comment-dots"></i> LET'S TALK</button>
+        <button id="menu-button" class="header-button button-secondary" onclick="toggleMenu()"><i class="fas fa-ellipsis-h"></i> MENU</button>
+      </div>
+    </div>
+  </div>
 
-<div id="balloon">
-  <div id="string"></div>
-</div>
-<div id="label">Click me!</div>
+  <div id="menu-container" class="menu-dropdown">
+    <a href="#">HOME</a>
+    <a href="#">ABOUT ME</a>
+    <a href="#">CONTACT</a>
+  </div>
 
-<script>
-  const balloon = document.getElementById('balloon');
-  let width = 100;
-  let height = 150;
-  let maxSize = 400;
+  <!-- Visor 3D de Spline -->
+  <spline-viewer url="https://prod.spline.design/iwqpTBUbdviSKuE2/scene.splinecode"></spline-viewer>
 
-  balloon.addEventListener('click', () => {
-    if (width < maxSize && height < maxSize) {
-      width += 20;
-      height += 30;
-      balloon.style.width = width + 'px';
-      balloon.style.height = height + 'px';
-    } else {
-      alert("POP! The balloon popped!");
-      width = 100;
-      height = 150;
-      balloon.style.width = width + 'px';
-      balloon.style.height = height + 'px';
+  <script>
+    let isAnimating = false;
+
+    function toggleDuckAnimation() {
+      const duckPath = document.getElementById('duck-path');
+      const circleIcon = document.getElementById('circle-icon');
+      if (isAnimating) {
+        circleIcon.style.backgroundColor = '#e3e4e8';
+        duckPath.classList.remove('animate-duck');
+        isAnimating = false;
+      } else {
+        circleIcon.style.backgroundColor = 'yellow';
+        duckPath.classList.add('animate-duck');
+        isAnimating = true;
+      }
     }
-  });
-</script>
 
+    function toggleMenu() {
+      const menuContainer = document.getElementById('menu-container');
+      const isMenuVisible = menuContainer.style.display === 'flex';
+      menuContainer.style.display = isMenuVisible ? 'none' : 'flex';
+    }
+
+    function letsTalk() {
+      alert("Let's talk clicked!");
+    }
+  </script>
 </body>
 </html>
